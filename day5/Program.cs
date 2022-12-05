@@ -15,21 +15,16 @@ namespace day5
             var instructionLines = inputs[1].Split("\n").ToList();
             var instructions = instructionLines.Select(Instruction.FromInputLine).ToList();
 
-            var crateSetup = inputs[0].Split("\n").ToList();
+            var crateInput = inputs[0].Split("\n");
 
-            
-            var ship = Ship.FromInputLines(crateSetup);
+            var ship = Ship.FromInputLines(crateInput.ToList());
             instructions.ForEach(instruction => ship.CrateMover9000(instruction));
             
-            var shipAlt = Ship.FromInputLines(inputs[0].Split("\n").ToList());
+            var shipAlt = Ship.FromInputLines(crateInput.ToList());
             instructions.ForEach(instruction => shipAlt.CrateMover9001(instruction));
             
             Console.WriteLine(ship.TopCrates());
             Console.WriteLine(shipAlt.TopCrates());
-
-
-            // MQSHJMWNH
-            // LLWJRBHVZ   
         }
     }
 }
