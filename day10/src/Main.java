@@ -38,9 +38,10 @@ public class Main {
       } else {
         checkCycle(cycle, x);
         cycle++;
+
+        checkCycle(cycle, x);
         var toAdd = Integer.parseInt(line.split(" ")[1]);
         x += toAdd;
-        checkCycle(cycle, x);
         cycle++;
 
       }
@@ -53,9 +54,9 @@ public class Main {
 
   public static void checkCycle(int cycleNumber, int x) {
     var moo = (cycleNumber -1) / 40;
-    var myIndex = (cycleNumber - (moo * 40)) - 1;
+    var myIndex = (cycleNumber - (moo * 40)) -1;
 
-    var index = x - 1;
+    var index = x;
     var spriteIsAt = List.of(index -1, index, index + 1);
 
 
