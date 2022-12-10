@@ -23,7 +23,7 @@ public class Main {
 
     IntStream.rangeClosed(0, 5).boxed().toList().forEach( out -> {
       IntStream.rangeClosed(0, 39).boxed().toList().forEach( in -> {
-        crt.get(out).add(".");
+        crt.get(out).add(" ");
       });
     });
 
@@ -53,16 +53,16 @@ public class Main {
 
 
   public static void checkCycle(int cycleNumber, int x) {
-    var moo = (cycleNumber -1) / 40;
-    var myIndex = (cycleNumber - (moo * 40)) -1;
+    var row = (cycleNumber -1) / 40;
+    var myIndex = (cycleNumber - (row * 40)) -1;
 
     var index = x;
     var spriteIsAt = List.of(index -1, index, index + 1);
 
 
     if(spriteIsAt.contains(myIndex)) {
-      crt.get(moo).remove(myIndex);
-      crt.get(moo).add(myIndex, "#");
+      crt.get(row).remove(myIndex);
+      crt.get(row).add(myIndex, "#");
     }
 
     if (cycleNumber == 20 || cycleNumber == 60 || cycleNumber == 100 || cycleNumber == 140
@@ -73,6 +73,6 @@ public class Main {
   }
 
   public static void printCrt() {
-    crt.forEach(System.out::println);
+    crt.forEach(line -> System.out.println(String.join("", line)));
   }
 }
