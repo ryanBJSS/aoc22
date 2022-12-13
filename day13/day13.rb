@@ -13,7 +13,7 @@ def mixed_type_converter(item)
 end
 
 def comparision(left, right)
-  puts "Comparing #{left} with #{right} (number)"
+  puts "Comparing #{left} with #{right}"
   if left.is_a?(Numeric) && right.is_a?(Numeric)
     return left <=> right
   elsif left.nil?
@@ -21,13 +21,13 @@ def comparision(left, right)
   elsif right.nil?
     return 1
   elsif left.is_a?(Array) && right.is_a?(Array)
-    left.map.with_index do |l, index| 
+    left.each_with_index do |l, index| 
       result = comparision(l, right[index]) 
       return result if result != 0
     end
     return left <=> right
   else
-    comparision(mixed_type_converter(left), mixed_type_converter(right))
+    return comparision(mixed_type_converter(left), mixed_type_converter(right))
   end
 end
 
@@ -38,8 +38,25 @@ input.each_with_index do |pair, pair_number|
     right = eval(pair.split("\n")[1])
 
     result = comparision(left, right)
+    
+    if result != -1 && result != 1
+      puts "****"
+      puts raise
+      puts "****"
+    end
     map[pair_number + 1] = result
 end
 
 pp map.select { |k, v| v == -1  }.keys.sum
+
+input = File.read("input.txt").split("\n")
+input = input.reject(&:empty?)
+input = input.map { |line| eval line } 
+input << [[2]]
+input << [[6]]
+
+input = input.sort do |a, b| 
+  comparision(a, b)
+end
+puts input
 
