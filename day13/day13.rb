@@ -13,7 +13,7 @@ def mixed_type_converter(item)
 end
 
 def comparision(left, right)
-  puts "Comparing #{left} with #{right}"
+  # puts "Comparing #{left} with #{right}"
   if left.is_a?(Numeric) && right.is_a?(Numeric)
     return left <=> right
   elsif left.nil?
@@ -25,7 +25,7 @@ def comparision(left, right)
       result = comparision(l, right[index]) 
       return result if result != 0
     end
-    return left <=> right
+    return left.size <=> right.size
   else
     return comparision(mixed_type_converter(left), mixed_type_converter(right))
   end
@@ -58,5 +58,5 @@ input << [[6]]
 input = input.sort do |a, b| 
   comparision(a, b)
 end
-puts input
+puts (input.find_index([[2]]) + 1) * (input.find_index([[6]]) + 1)
 
