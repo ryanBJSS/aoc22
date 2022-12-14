@@ -32,7 +32,7 @@ public class CaveTest {
         new Coordinate(501, 9)
     );
 
-    assertEquals(24, new Cave(walls).run());
+    assertEquals(24, new Cave(walls).partOne());
   }
 
   @Test
@@ -61,6 +61,6 @@ public class CaveTest {
         new Coordinate(501, 9)
     );
 
-    assertEquals(93, new Cave(walls).runTwo());
+    assertEquals(93, new Cave(walls).partTwo());
   }
 }

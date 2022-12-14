@@ -11,6 +11,10 @@ public class Coordinate {
     this.frozen = false;
   }
 
+  public static Coordinate drop() {
+    return new Coordinate(500, 0);
+  }
+
   public int getX() {
     return x;
   }
