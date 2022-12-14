@@ -21,6 +21,6 @@ public class Main {
     });
 
 //    new Cave(startingPoints).run();
-    new Cave(startingPoints).partTwo();
+    new Cave(startingPoints).run();
   }
 }

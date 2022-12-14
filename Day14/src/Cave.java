@@ -6,48 +6,40 @@ public class Cave {
 
   private final List<Coordinate> points;
   private boolean continueDropping;
-  private final int floor;
+  private final int floorLevel;
+  private boolean caveHasFloor;
 
   public Cave(List<Coordinate> points) {
     this.points = new ArrayList<>(points);
+    this.caveHasFloor = false;
     continueDropping = true;
-    floor = points.stream().max(Comparator.comparing(Coordinate::getY)).get().getY() + 2;
+    floorLevel = points.stream().max(Comparator.comparing(Coordinate::getY)).get().getY() + 2;
   }
 
-  public int partOne() {
-    var sandCount = 0;
-    var currentSand = Coordinate.drop();
-    while (continueDropping) {
+  public Cave withFloor() {
+    this.caveHasFloor = true;
+    return this;
+  }
 
-      sandCount++;
+  public int run() {
+
+    var amountOfSandDropped = 0;
+    var currentSand = Coordinate.drop();
+
+    while (continueDropping) {
 
       while (!currentSand.isFrozen()) {
         tick(currentSand);
       }
-      currentSand = Coordinate.drop();
-
-    }
-
-    System.out.println(sandCount - 1);
-    return sandCount - 1;
-  }
-
-  public int partTwo() {
-    var sandCount = 0;
-    var currentSand = Coordinate.drop();
-    while (continueDropping) {
-
-      sandCount++;
-
-      while (!currentSand.isFrozen() && continueDropping) {
-        tickWithFloor(currentSand);
-      }
 
       currentSand = Coordinate.drop();
+      amountOfSandDropped++;
     }
 
-    System.out.println(sandCount);
-    return sandCount;
+    var result = amountOfSandDropped - 1;
+
+    System.out.println(result);
+    return result;
   }
 
   private void tick(Coordinate coordinate) {
@@ -61,53 +53,39 @@ public class Cave {
       coordinate.fallLeft();
     } else if (canFallRight(coordinate)) {
       coordinate.fallRight();
-    } else {
-      coordinate.freeze();
-      points.add(coordinate);
-    }
-  }
-
-  private void tickWithFloor(Coordinate coordinate) {
-
-    if (canFallDown(coordinate)) {
-      coordinate.fallDown();
-    } else if (canFallLeft(coordinate)) {
-      coordinate.fallLeft();
-    } else if (canFallRight(coordinate)) {
-      coordinate.fallRight();
-    } else if (sandHasPluggedTheHole(coordinate)) {
-      coordinate.freeze();
+    } else if (sandHasPluggedTheHole()) {
       continueDropping = false;
+      coordinate.freeze();
     } else {
       coordinate.freeze();
       points.add(coordinate);
     }
   }
 
-  private static boolean sandHasPluggedTheHole(Coordinate coordinate) {
-    return coordinate.getX() == 500 && coordinate.getY() == 0;
+  private boolean sandHasPluggedTheHole() {
+    return points.stream().anyMatch(point -> point.getX() == 500 && point.getY() == 0);
   }
 
   private boolean fallingIntoTheVoid(Coordinate coordinate) {
-    return coordinate.getY() >= points.stream().max(Comparator.comparing(Coordinate::getY)).get()
-        .getY();
+    return !caveHasFloor && coordinate.getY() > points.stream()
+        .max(Comparator.comparing(Coordinate::getY)).get().getY();
   }
 
   private boolean canFallDown(Coordinate coordinate) {
     return points.stream().noneMatch(
         point -> point.getX() == coordinate.getX() && point.getY() == coordinate.getY() + 1)
-        && coordinate.getY() + 1 < floor;
+        && coordinate.getY() + 1 < floorLevel;
   }
 
   private boolean canFallLeft(Coordinate coordinate) {
     return points.stream().noneMatch(
         point -> point.getX() == coordinate.getX() - 1 && point.getY() == coordinate.getY() + 1)
-        && coordinate.getY() + 1 < floor;
+        && coordinate.getY() + 1 < floorLevel;
   }
 
   private boolean canFallRight(Coordinate coordinate) {
     return points.stream().noneMatch(
         point -> point.getX() == coordinate.getX() + 1 && point.getY() == coordinate.getY() + 1)
-        && coordinate.getY() + 1 < floor;
+        && coordinate.getY() + 1 < floorLevel;
   }
 }

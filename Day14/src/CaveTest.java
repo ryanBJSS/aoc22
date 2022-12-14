@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CaveTest {
 
   @Test
-  void itWorks() {
+  void itWorksForPartOne() {
 
     var walls = List.of(
         new Coordinate(498, 4),
@@ -32,7 +32,7 @@ public class CaveTest {
         new Coordinate(501, 9)
     );
 
-    assertEquals(24, new Cave(walls).partOne());
+    assertEquals(24, new Cave(walls).run());
   }
 
   @Test
@@ -61,6 +61,6 @@ public class CaveTest {
         new Coordinate(501, 9)
     );
 
-    assertEquals(93, new Cave(walls).partTwo());
+    assertEquals(93, new Cave(walls).withFloor().run());
   }
 }
