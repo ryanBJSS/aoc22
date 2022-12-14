@@ -20,6 +20,7 @@ public class Main {
       startingPoints.addAll(new Plotter(coords).plot());
     });
 
-    new Cave(startingPoints).run();
+//    new Cave(startingPoints).run();
+    new Cave(startingPoints).runTwo();
   }
 }
