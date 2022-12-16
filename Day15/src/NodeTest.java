@@ -21,10 +21,33 @@ public class NodeTest {
   }
 
   @Test
-  void givenABeaconLocation_itCalculatesAllThePointsOthersCannotBe() {
-    var sensor = new Node(8, 7);
-    var beacon = new Node( 2, 10);
-    assertEquals(181, sensor.ruleOut(beacon).size());
+  void calculatesTheSmallestPossibleXValueForAGivenY() {
+    var beacon = new Node(2,  10);
+    var sensor = new Node(8, 7, beacon);
+    assertEquals(2, sensor.minX(4));
+    assertEquals(2, sensor.minX(10));
+  }
+
+  @Test
+  void calculatesTheLargestPossibleXValueForAGivenY() {
+    var beacon = new Node(2,  10);
+    var sensor = new Node(8, 7, beacon);
+    assertEquals(14, sensor.maxX(4));
+    assertEquals(14, sensor.maxX(10));
+  }
+
+  @Test
+  void calculatesTheSmallestPossibleXValueForAGivenY1() {
+    var beacon = new Node(15,  3);
+    var sensor = new Node(13, 2, beacon);
+    assertEquals(0, sensor.minX(17));
+  }
+
+  @Test
+  void calculatesTheLargestPossibleXValueForAGivenY1() {
+    var beacon = new Node(15,  3);
+    var sensor = new Node(13, 2, beacon);
+    assertEquals(0, sensor.maxX(17));
   }
 
 }

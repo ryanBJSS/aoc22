@@ -1,10 +1,6 @@
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Node {
@@ -12,11 +8,17 @@ public class Node {
   private final int x;
   private final int y;
   private Node closestBeacon;
+  private final int d;
 
   public Node(int x, int y, Node closestBeacon) {
     this.x = x;
     this.y = y;
     this.closestBeacon = closestBeacon;
+    if(closestBeacon != null) {
+      this.d = Math.abs(x - closestBeacon.getX()) + Math.abs(y - closestBeacon.getY());
+    } else {
+      d = 0;
+    }
   }
 
   public Node(int x, int y) {
@@ -61,6 +63,20 @@ public class Node {
     return Math.abs(x - point.getX()) + Math.abs(y - point.getY());
   }
 
+  public int minX(int y1) {
+    if(Math.abs(y - y1) > d) {
+      return 0;
+    }
+    return (x - d) + Math.abs(y - y1);
+  }
+
+  public int maxX(int y1) {
+    if(Math.abs(y - y1) > d) {
+      return 0;
+    }
+    return (x + d) - Math.abs(y - y1);
+  }
+
   public Set<Node> ruleSimple(int yHeight) {
     var maxDistance = distance(closestBeacon);
     var points = new HashSet<Node>();
@@ -78,25 +94,8 @@ public class Node {
     return points;
   }
 
-  public Set<Node> ruleOut(Node beacon) {
-    var maxDistance = distance(beacon);
-    var points = new HashSet<Node>();
-
-    var rangeOfX = IntStream.rangeClosed(x - maxDistance - 10, x + maxDistance + 10).boxed()
-        .toList();
-    var rangeOfY = IntStream.rangeClosed(y - maxDistance - 10, y + maxDistance + 10).boxed()
-        .toList();
-    ;
-
-    for (var i : rangeOfX) {
-      for (var j : rangeOfY) {
-        var potentialNode = new Node(i, j);
-        if (distance(potentialNode) <= maxDistance) {
-          points.add(potentialNode);
-        }
-      }
-    }
-
-    return points;
+  public boolean withinRange(int x1, int y1) {
+    return Math.abs(x - x1) + Math.abs(y - y1) <= d;
   }
+
 }
