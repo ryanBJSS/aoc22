@@ -7,7 +7,7 @@ public class Node {
 
   private final int x;
   private final int y;
-  private Node closestBeacon;
+  private final Node closestBeacon;
   private final int d;
 
   public Node(int x, int y, Node closestBeacon) {

@@ -1,9 +1,6 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Cave {
 
@@ -15,7 +12,7 @@ public class Cave {
 
   public int partOne(int yHeight) {
     var allOut = new HashSet<Node>();
-    nodes.stream().forEach(node -> allOut.addAll(node.ruleSimple(yHeight)));
+    nodes.forEach(node -> allOut.addAll(node.ruleSimple(yHeight)));
 
     var beacons = nodes.stream().map(Node::getClosestBeacon).toList();
 
@@ -25,9 +22,8 @@ public class Cave {
     return filtered.size();
   }
 
-  public int partTwo(int max) {
+  public long partTwo(int max) {
 
-    Node location = null;
     for (int y = max; y > 0; y--) {
       var allRanges = new ArrayList<List<Integer>>();
       for (var node: nodes) {
@@ -35,42 +31,39 @@ public class Cave {
       }
 
       var startOfRanges = allRanges.stream().map(node -> node.get(0)).toList();
-      var endOfRanges = allRanges.stream().map(node -> node.get(node.size() -1)).toList();
+      var endOfRanges = allRanges.stream().map(node -> node.get(node.size() - 1)).toList();
 
-      var min = startOfRanges.stream().min(Integer::compare).get();
-      var mmax= endOfRanges.stream().max(Integer::compare).get();
+      var minCovered = Math.max(startOfRanges.stream().min(Integer::compare).get(), 0) == 0;
+      var maxCovered = Math.min(endOfRanges.stream().max(Integer::compare).get(), max) == max;
 
-      var minCovered = Math.max(min, 0) == 0;
-      var maxCovered = Math.min(mmax, max) == max;
-
-      var mi = startOfRanges.stream().allMatch( minVal -> allRanges.stream().anyMatch( ran ->   {
+      var leftCovered = startOfRanges.stream().allMatch( minVal -> allRanges.stream().anyMatch( ran ->   {
         var check = Math.max(minVal - 1, 0);
         return ran.get(0) <= check && check <= ran.get(1);
       }));
 
-      var ma = endOfRanges.stream().allMatch( maxVsl -> allRanges.stream().anyMatch( ran ->   {
+      var rightCovered = endOfRanges.stream().allMatch( maxVsl -> allRanges.stream().anyMatch( ran ->   {
         var check = Math.min(maxVsl + 1, max);
         return ran.get(0) <= check && check <= ran.get(1);
       }));
 
-      if (!(minCovered && maxCovered && mi && ma)) {
+      if (!(minCovered && maxCovered && leftCovered && rightCovered)) {
         System.out.println("Found");
         for (int i = max; i > 0; i--) {
           int finalI = i;
           int finalY = y;
           var choose = nodes.stream().noneMatch(node -> node.withinRange(finalI, finalY));
           if (choose) {
-            location = new Node(i, y);
-            var outX = Long.valueOf(location.getX());
-            var ouyY = Long.valueOf(location.getY());
+            var outX = Long.valueOf(i);
+            var ouyY = Long.valueOf(y);
 
-            System.out.println((outX* 4000000) + ouyY);
-            return (location.getX() * 4000000) + location.getY();
+            var result = (outX * 4000000) + ouyY;
+            System.out.println(result);
+
+            return result;
           }
         }
       }
     }
     return 0;
-
   }
 }
