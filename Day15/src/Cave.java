@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +13,6 @@ public class Cave {
     this.nodes = nodes;
   }
 
-
   public int partOne(int yHeight) {
     var allOut = new HashSet<Node>();
     nodes.stream().forEach(node -> allOut.addAll(node.ruleSimple(yHeight)));
@@ -24,88 +25,52 @@ public class Cave {
     return filtered.size();
   }
 
-//  public int partTwo(int max) {
-//
-//    var allExcluded = new HashSet<Node>();
-//
-//    Node location = null;
-//    for (int i = max; i > 0; i--) {
-//
-//      if(part(i, max) != max + 1) {
-//        System.out.println(i);
-//        return i;
-//      }
-//      System.out.println(i);
-//    }
-//    return 0;
-//  }
-
   public int partTwo(int max) {
-    var allXCoords = IntStream.rangeClosed(0, max).boxed().collect(Collectors.toSet());
 
     Node location = null;
     for (int y = max; y > 0; y--) {
-//      var covered = new HashSet<Integer>();
-//      nodes.forEach(node -> covered.addAll(
-//          IntStream.rangeClosed(node.minX(finalY), node.maxX(finalY)).boxed()
-//              .filter(n -> n <= max && n >= 0).toList()));
-
-      var min = 0;
-      var mmax = max;
-
-      for (var node : nodes) {
-        var localMin = node.minX(y);
-        var localMax = node.maxX(y);
-        if (localMin <= min && localMax >= min) {
-          min = localMax;
-        }
-
-        if (localMin <= mmax && localMax >= mmax) {
-          mmax = localMin;
-        }
+      var allRanges = new ArrayList<List<Integer>>();
+      for (var node: nodes) {
+        allRanges.add(List.of(node.minX(y), node.maxX(y)));
       }
 
-      if (mmax - 1 > min) {
+      var startOfRanges = allRanges.stream().map(node -> node.get(0)).toList();
+      var endOfRanges = allRanges.stream().map(node -> node.get(node.size() -1)).toList();
 
+      var min = startOfRanges.stream().min(Integer::compare).get();
+      var mmax= endOfRanges.stream().max(Integer::compare).get();
+
+      var minCovered = Math.max(min, 0) == 0;
+      var maxCovered = Math.min(mmax, max) == max;
+
+      var mi = startOfRanges.stream().allMatch( minVal -> allRanges.stream().anyMatch( ran ->   {
+        var check = Math.max(minVal - 1, 0);
+        return ran.get(0) <= check && check <= ran.get(1);
+      }));
+
+      var ma = endOfRanges.stream().allMatch( maxVsl -> allRanges.stream().anyMatch( ran ->   {
+        var check = Math.min(maxVsl + 1, max);
+        return ran.get(0) <= check && check <= ran.get(1);
+      }));
+
+      if (!(minCovered && maxCovered && mi && ma)) {
+        System.out.println("Found");
         for (int i = max; i > 0; i--) {
           int finalI = i;
           int finalY = y;
           var choose = nodes.stream().noneMatch(node -> node.withinRange(finalI, finalY));
           if (choose) {
             location = new Node(i, y);
-            System.out.println((location.getX()));
-            System.out.println((location.getY()));
-            System.out.println((location.getX() * 4000000) + location.getY());
+            var outX = Long.valueOf(location.getX());
+            var ouyY = Long.valueOf(location.getY());
+
+            System.out.println((outX* 4000000) + ouyY);
             return (location.getX() * 4000000) + location.getY();
           }
         }
-      } else {
-        System.out.println("Skipped");
       }
-      System.out.println("Checked " + y);
     }
     return 0;
 
   }
 }
-
-//  public int partTwo(int max) {
-//
-//    Node location = null;
-//    for (int i = max; i > 0; i--) {
-//      for (int j = 0; j < max + 1; j++) {
-//
-//        int finalI = i;
-//        int finalJ = j;
-//        var debug = nodes.stream().filter(node -> node.withinRange(finalI, finalJ)).toList();
-//        var choose = nodes.stream().noneMatch(node -> node.withinRange(finalI, finalJ));
-//        if(choose) {
-//          location = new Node(i,j);
-//          System.out.println((location.getX() * 4000000) + location.getY());
-//          return (location.getX() * 4000000) + location.getY();
-//        }
-//      }
-//      System.out.println("Checking " + i);
-//    }
-//    return 0;
-//  }
